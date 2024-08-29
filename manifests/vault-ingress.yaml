@@ -15,6 +15,6 @@ spec:
         path: /
         backend:
           service:
-            name: vault-internal
+            name: vault-active
             port:
               number: 8200
