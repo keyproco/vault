@@ -11,7 +11,7 @@ variable "grafana_admin_password" {
     type = string
 }
 
-variable "grafana" {
+variable "grafana_prometheus" {
     type = map(string)
 
     default = {

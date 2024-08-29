@@ -20,7 +20,7 @@ resource "helm_release" "grafana" {
   values = [
     <<EOF
 service:
-  type: ${var.grafana.service_type}
+  type: ${var.grafana_prometheus.service_type}
 datasources:
  datasources.yaml:
    apiVersion: 1
