@@ -10,14 +10,14 @@ resource "helm_release" "vault" {
 
   set {
     name  = "server.ha.enabled"
-    value = true 
+    value = true
   }
 
   set {
     name  = "server.ha.raft.enabled"
-    value = true 
+    value = true
   }
-  
+
   set {
     name  = "server.ha.raft.config"
     value = <<EOT
@@ -53,7 +53,7 @@ EOT
 
 resource "kubernetes_ingress_v1" "vault_ingress" {
   metadata {
-    name      = "vault-ingress"
+    name = "vault-ingress"
 
     annotations = {
       "nginx.ingress.kubernetes.io/rewrite-target" = "/"
@@ -66,7 +66,7 @@ resource "kubernetes_ingress_v1" "vault_ingress" {
 
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
 
           backend {
