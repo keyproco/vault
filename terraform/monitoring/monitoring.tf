@@ -9,6 +9,28 @@ resource "helm_release" "prometheus" {
   namespace  = "monitoring"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "prometheus"
+  
+  values = [
+    file("${path.module}/prometheus-values.yaml")
+  ]
+
+}
+
+
+
+
+
+
+
+resource "kubernetes_secret" "prometheus_token" {
+  metadata {
+    name      = "prometheus-token-secret"
+    namespace = "monitoring"
+  }
+
+  data = {
+    "prometheus-token" = file("${path.module}/prometheus-token")
+  }
 }
 
 resource "helm_release" "grafana" {
@@ -45,6 +67,9 @@ dashboardProviders:
 
 dashboards:
   default:
+    echo:
+      json: |
+        ${indent(8, file("${path.module}/dashboards/vault.json"))}
 EOF
   ]
 }
@@ -72,6 +97,39 @@ resource "kubernetes_ingress_v1" "grafana_ingress" {
           backend {
             service {
               name = "grafana"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+resource "kubernetes_ingress_v1" "prometheus_ingress" {
+  metadata {
+    name      = "prometheus-ingress"
+    namespace      = "monitoring"
+    annotations = {
+      "nginx.ingress.kubernetes.io/rewrite-target" = "/"
+    }
+  }
+
+  spec {
+    rule {
+      host = "prometheus.labspace.home"
+
+      http {
+        path {
+          path = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = "prometheus-server"
               port {
                 number = 80
               }

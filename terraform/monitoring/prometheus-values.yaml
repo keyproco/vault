@@ -1,0 +1,23 @@
+serverFiles:
+  prometheus.yml:
+    scrape_configs:
+
+      - job_name: 'vault'
+        metrics_path: /v1/sys/metrics
+        params:
+          format:
+            - 'prometheus'
+        scheme: http
+        authorization:
+          credentials_file: /etc/prometheus/prometheus-token
+        static_configs:
+          - targets:
+              - 'vault-active.default.svc.cluster.local:8200'
+
+server:
+  extraSecretMounts:
+    - name: prometheus-token
+      mountPath: /etc/prometheus/prometheus-token
+      subPath: prometheus-token
+      secretName: prometheus-token-secret
+      readOnly: true

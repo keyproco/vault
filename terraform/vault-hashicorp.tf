@@ -34,8 +34,12 @@ storage "raft" {
   retry_join {
     leader_api_addr = "http://vault-0.vault-internal:8200"
   }
-
 }
+
+telemetry {
+    disable_hostname = true
+    prometheus_retention_time = "180h"
+  }
 
 service_registration "kubernetes" {}
 EOT
